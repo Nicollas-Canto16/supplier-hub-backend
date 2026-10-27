@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: supplier-hub-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-docker}
+      POSTGRES_DB: ${POSTGRES_DB:-supplier-hub}
+    ports:
+      - '5432:5432'
+    volumes:
+      - supplier_hub_data:/var/lib/postgresql/data
+
+volumes:
+  supplier_hub_data:

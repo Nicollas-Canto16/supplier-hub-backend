@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  orders               Order[]
+  sessions             Session[]
+  access_logs          AccessLog[]
+  password_reset_token PasswordResetToken[]
+
+  @@map("users")
+}
+
+model Session {
+  id            String    @id @default(uuid())
+  refresh_token String    @unique
+  id_address    String?
+  user_agent    String?
+  expired_at    DateTime
+  revoked_at    DateTime?
+  last_used_at  DateTime?
+  created_at    DateTime  @default(now())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("sessions")
+}
+
+model PasswordResetToken {
+  id         String    @id @default(uuid())
+  token      String    @unique
+  expired_at DateTime
+  used_at    DateTime?
+  created_at DateTime  @default(now())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("password_reset_token")
+}
+
+enum AccessLogAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGOUT
+  TOKEN_REFRESH
+  FORGOT_PASSWORD
+  RESET_PASSWORD
+}
+
+model AccessLog {
+  id         String          @id @default(uuid())
+  action     AccessLogAction
+  email      String?
+  id_address String?
+  user_agent String?
+  created_at DateTime        @default(now())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@index([action])
+  @@map("access_logs")
+}
+
+enum OrderStatus {
+  PROCESSING
+  INVOICED
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  user_id       String
+  status        OrderStatus @default(PROCESSING)
+  subtotal      Decimal     @db.Decimal(12, 2)
+  shipping_cost Decimal     @default(0) @db.Decimal(12, 2)
+  discount      Decimal     @default(0) @db.Decimal(12, 2)
+  total         Decimal     @db.Decimal(12, 2)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Restrict)
+
+  items OrderItems[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItems {
+  id       String @id @default(cuid())
+  order_id String
+  order    Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  quantity    Int
+  name        String
+  color       String
+  description String?
+  unit_price  Decimal @db.Decimal(12, 2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("order_items")
+}
