@@ -1,4 +1,4 @@
-type AccessLogAction =
+export type AccessLogAction =
   | 'LOGIN_SUCCESS'
   | 'LOGIN-FAILURE'
   | 'LOGOUT'
@@ -6,7 +6,7 @@ type AccessLogAction =
   | 'FORGOT-PASSAWORD'
   | 'RESET-PASSWORD';
 
-type AccesLog = {
+export type AccesLog = {
   id: string;
   action: AccessLogAction;
   email: string | null;
@@ -16,7 +16,7 @@ type AccesLog = {
   user_id: string | null;
 };
 
-type AccessLogCreate = {
+export type AccessLogCreate = {
   action: AccessLogAction;
   email?: string | null;
   ip_address?: string | null;
@@ -24,7 +24,7 @@ type AccessLogCreate = {
   user_id?: string | null;
 };
 
-type RequestMetaData = {
+export type RequestMetaData = {
   ip_address?: string | null;
   user_agent?: string | null;
 };

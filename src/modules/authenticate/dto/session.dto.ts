@@ -1,4 +1,4 @@
-type Session = {
+export type Session = {
   id: string;
   refresh_token: string;
   ip_addresss: string | null;
@@ -10,7 +10,7 @@ type Session = {
   user_id: string;
 };
 
-type SessionCreate = {
+export type SessionCreate = {
   refresh_token: string;
   ip_addresss?: string | null;
   user_agent?: string | null;
@@ -18,7 +18,7 @@ type SessionCreate = {
   user_id: string;
 };
 
-type AuthTokens = {
+export type AuthTokens = {
   accessToken: string;
   refreshToken: string;
 };

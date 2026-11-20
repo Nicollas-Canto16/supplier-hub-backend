@@ -1,4 +1,4 @@
-type PasswordResetrToken = {
+export type PasswordResetrToken = {
   id: string;
   token: string;
   expiered_at: Date | null;
@@ -6,7 +6,7 @@ type PasswordResetrToken = {
   user_id: string;
 };
 
-type PasswordResetTokenCreated = {
+export type PasswordResetTokenCreated = {
   token: string;
   expired_at: Date;
   uer_id: string;
